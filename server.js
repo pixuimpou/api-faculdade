@@ -1,10 +1,13 @@
 const express = require('express');
+const alunos = require('./routes/alunos');
 
 const app = express();
 const PORT = 8080;
 
-app.get('/', (req, res) => {
 
+app.use('/alunos', alunos);
+
+app.get('/', (req, res) => {
     res.send('Hello World');
 });
 

@@ -1,4 +1,4 @@
-let query;
+let query = '';
 
 let builder = {
     select: (columns, table) => {
@@ -18,7 +18,13 @@ let builder = {
     where: (params) => {
         query = `${query} WHERE ${params}`;
         return builder;
-    }
+    },
+
+    end: () => {
+        let aux = query;
+        query = '';
+        return `${aux};`
+    } 
 }
 
 module.exports = builder;
