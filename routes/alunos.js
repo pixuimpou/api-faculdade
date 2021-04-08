@@ -7,11 +7,14 @@ router.use(express.json());
 
 router.get('/', (req, res) => {
     sql.doQuerry(`SELECT 
-                    id_aluno, 
-                    nome, 
-                    cpf,
-                    id_curso
-                FROM alunos
+                    a.id_aluno, 
+                    a.nome, 
+                    a.cpf,
+                    a.id_curso,
+                    c.nome_curso
+                FROM alunos a
+                INNER JOIN cursos c
+                ON c.id_curso = a.id_curso
                 ;`, (data) => {
                     res.send(data);
                 });
@@ -48,5 +51,5 @@ router.post('/', (req, res) => {
                             
                         });
 });
-    
+
 module.exports = router;
