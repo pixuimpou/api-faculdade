@@ -10,8 +10,8 @@ module.exports = {
                 console.log(err);
                 throw err;
             }
-            con.query(query, (err, results) => {
-                if (err) throw err;
+            con.query(query, (error, results) => {
+                if (error) throw error;
                 callback(results);
             });
         });
