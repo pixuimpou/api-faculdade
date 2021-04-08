@@ -5,7 +5,7 @@ CREATE DATABASE db_faculdade;
 CREATE TABLE alunos(
     id_aluno int primary key auto_increment,
     nome varchar(50),
-    cpf varchar(15) UNIQUE,
+    cpf char(15) UNIQUE,
     id_curso int
 );
 
