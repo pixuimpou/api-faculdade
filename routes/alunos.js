@@ -1,3 +1,4 @@
+const { json } = require('express');
 const express = require('express');
 const sql = require('../mysql/queries');
 
@@ -51,5 +52,40 @@ router.post('/', (req, res) => {
                             
                         });
 });
+
+router.delete('/:id', (req, res) => {
+    const id = req.params.id;
+    sql.doQuerry(`DELETE FROM alunos
+                    WHERE id_aluno = ${id}
+                    ;`, (rows) => {
+                        if(rows.affectedRows > 0) {
+                            res.status(202).send('Aluno apagado');
+                        } else {
+                            res.status(204).send('Sem conteúdo');
+                        }
+                    });
+});
+
+router.put('/:id', (req, res) => {
+    const id = req.params.id;
+    const columns = Object.getOwnPropertyNames(req.body);
+    let columnString = ''; 
+    columns.forEach((column, index) => {
+        if (index === 0) {
+            columnString = `${column} = ${JSON.stringify(req.body[column])}`;
+        } else {
+            columnString = (`${columnString}, ${column} = ${JSON.stringify(req.body[column])}`);
+        }
+    });
+    sql.doQuerry(`UPDATE alunos
+                    SET ${columnString}
+                    WHERE id_aluno = ${id}`, (rows) => {
+                        if(rows.affectedRows > 0) {
+                            res.status(200).send('Aluno editado com sucesso');
+                        } else {
+                            res.status(400).send('Algo deu errado');
+                        }
+                    })
+})
 
 module.exports = router;
