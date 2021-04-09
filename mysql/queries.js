@@ -2,7 +2,7 @@ const config = require('./mysqlConfig');
 
 module.exports = {
 
-    doQuerry: (query, callback) => {
+    doQuery: (query, callback) => {
         const con = config.connection();
         let queryResult;
         con.connect(err => {

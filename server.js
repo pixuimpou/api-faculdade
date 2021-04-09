@@ -4,7 +4,6 @@ const alunos = require('./routes/alunos');
 const app = express();
 const PORT = 8080;
 
-
 app.use('/alunos', alunos);
 
 app.get('/', (req, res) => {

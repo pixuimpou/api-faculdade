@@ -1,4 +1,3 @@
-const { json } = require('express');
 const express = require('express');
 const sql = require('../mysql/queries');
 
@@ -7,7 +6,7 @@ const router = express.Router();
 router.use(express.json());
 
 router.get('/', (req, res) => {
-    sql.doQuerry(`SELECT 
+    sql.doQuery(`SELECT 
                     a.id_aluno, 
                     a.nome, 
                     a.cpf,
