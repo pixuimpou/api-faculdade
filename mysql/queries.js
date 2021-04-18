@@ -1,20 +1,66 @@
-const config = require('./mysqlConfig');
-
 module.exports = {
+    select: (columns, table, condition, join, order) => {
+        let columnString = '';
+        let query = '';
 
-    doQuery: (query, callback) => {
-        const con = config.connection();
-        let queryResult;
-        con.connect(err => {
-            if (err) {
-                console.log(err);
-                throw err;
+        columns.forEach((column, index) => {
+            if (index > 0) {
+                columnString += `, ${column}`;
+            } else {
+                columnString += `${column}`;
             }
-            con.query(query, (error, results) => {
-                if (error) throw error;
-                callback(results);
-            });
         });
-        return queryResult;
+
+        query = `SELECT ${columnString} FROM ${table}`;
+
+        if (join) {
+            query += ` ${join}`;
+        }
+
+        if(condition) {
+            query += ` WHERE ${condition}`;
+        }
+
+        if(order) {
+            query += ` ORDER BY ${order}`;
+        }
+        console.log(query)
+        query += ';';
+        return query;
+    },
+
+    join: (type, table, condition) => {
+        let query = `${type} ${table} ON ${condition}`;
+        return query;
+    },
+
+    insert: (values, table) => {
+        let valueString = '';
+        values.forEach((value, index) => {
+            if(index > 0) {
+                if(value) {
+                    valueString += `, ${value}`;
+                } else {
+                    valueString += `, NULL`;
+                }
+            } else {
+                if(value) {
+                    valueString += `${value}`;
+                } else {
+                    valueString += `NULL`;
+                } 
+            } 
+        });
+        return `INSERT INTO ${table} VALUES (${valueString});`;
+    },
+
+    delete: (table, condition) => {
+        let query = `DELETE FROM ${table} WHERE ${condition};`;
+        return query;
+    },
+
+    update: (table, columnString, condition) => {
+        let query = `UPDATE ${table} SET ${columnString} WHERE ${condition};`
+        return query;
     }
 }
