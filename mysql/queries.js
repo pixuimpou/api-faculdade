@@ -24,7 +24,6 @@ module.exports = {
         if(order) {
             query += ` ORDER BY ${order}`;
         }
-        console.log(query)
         query += ';';
         return query;
     },
@@ -34,12 +33,22 @@ module.exports = {
         return query;
     },
 
-    insert: (values, table) => {
+    insert: (values, columns, table) => {
         let valueString = '';
+        let columnString = '';
+
+        columns.forEach((column, index) => {
+            if(index > 0) {
+                columnString += `, ${column}`;
+            } else {
+                columnString += `${column}`;
+            }
+        })
+
         values.forEach((value, index) => {
             if(index > 0) {
                 if(value) {
-                    valueString += `, ${value}`;
+                    valueString += `, ${value}`;  
                 } else {
                     valueString += `, NULL`;
                 }
@@ -51,7 +60,8 @@ module.exports = {
                 } 
             } 
         });
-        return `INSERT INTO ${table} VALUES (${valueString});`;
+        
+        return `INSERT INTO ${table} (${columnString}) VALUES (${valueString});`;
     },
 
     delete: (table, condition) => {

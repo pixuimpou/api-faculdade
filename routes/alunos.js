@@ -1,60 +1,42 @@
 const express = require('express');
 const sql = require('../mysql/mysqlHelper');
 const q = require('../mysql/queries');
-const querystring = require('querystring');
-const url = require('url');
+const alunosController = require('../controllers/alunosController');
 
 const router = express.Router();
 
 router.use(express.json());
 
 router.get('/', (req, res) => {
-    const columns = req.query.col;
-    const joinTable = req.query.jt;
-    const joinCondition = req.query.jc;
-
-    if(req.query.col) {
         sql.doQuery(
-            q.select(
-                columns,
-                'alunos a',
-                undefined,
-                q.join('INNER JOIN', joinTable, joinCondition)),
+            alunosController.basicSelection(),
             (data) => {
                 res.status(200).send(data);
             });
-    } else {
-        sql.doQuery(
-            q.select(
-                ['a.id_aluno', 'a.nome', 'a.cpf', 'c.nome_curso AS curso'],
-                'alunos a',
-                undefined,
-                q.join('INNER JOIN', 'cursos c', 'c.id_curso = a.id_curso'),
-                'a.nome'),
-            (data) => {
-                res.status(200).send(data);
-            });
-    }
-    
 });
 
 router.get('/:id', (req, res) => {
     const id = req.params.id;
 
     sql.doQuery(
-        q.select(
-            ['id_aluno', 'nome', 'cpf', 'id_curso'],
-            'alunos',
-            `id_aluno = ${id}`),
+        alunosController.fullSelection(id),
         (data) => {
             res.status(200).send(data);
         });
 });
 
 router.post('/', (req, res) => {
+    let columns = Object.getOwnPropertyNames(req.body);
+    let values = [];
+    
+    columns.forEach(column => {
+        values.push(JSON.stringify(req.body[column]));
+    });
+
     sql.doQuery(
         q.insert(
-            ['NULL', JSON.stringify(req.body.nome), JSON.stringify(req.body.cpf), req.body.id_curso],
+            ['NULL', ...values],
+            ['id_aluno', ...columns],
             'alunos'),
         (rows) => {
                     if(rows.affectedRows > 0) {
@@ -68,7 +50,7 @@ router.post('/', (req, res) => {
 router.delete('/:id', (req, res) => {
     const id = req.params.id;
     sql.doQuery(
-        q.delete('alunos', `id_aluno = ${id}`), 
+        alunosController.delete(id), 
         (rows) => {
             if(rows.affectedRows > 0) {
                 res.status(202).send('Aluno apagado');
