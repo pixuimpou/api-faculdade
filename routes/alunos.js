@@ -19,7 +19,7 @@ router.get('/:id', (req, res) => {
     const id = req.params.id;
 
     sql.doQuery(
-        alunosController.fullSelection(id),
+        alunosController.basicSelection(id),
         (data) => {
             res.status(200).send(data);
         });
@@ -34,16 +34,13 @@ router.post('/', (req, res) => {
     });
 
     sql.doQuery(
-        q.insert(
-            ['NULL', ...values],
-            ['id_aluno', ...columns],
-            'alunos'),
+        alunosController.insert(values, columns),
         (rows) => {
-                    if(rows.affectedRows > 0) {
-                        res.status(201).send('Novo aluno adicionado');
-                    } else {
-                        res.status(400).send('Ocorreu um erro');
-                    }           
+            if(rows.affectedRows > 0) {
+                res.status(201).send('Novo aluno adicionado');
+            } else {
+                res.status(400).send('Ocorreu um erro');
+            }           
         });
 });
 
@@ -73,7 +70,7 @@ router.put('/:id', (req, res) => {
     });
 
     sql.doQuery(
-        q.update('alunos', columnString, `id_aluno = ${id}`), 
+        alunosController.update(columnString, id), 
         (rows) => {
             if(rows.affectedRows > 0) {
                 res.status(200).send('Aluno editado com sucesso');
