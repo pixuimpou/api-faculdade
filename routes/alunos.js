@@ -1,6 +1,5 @@
 const express = require('express');
 const sql = require('../mysql/mysqlHelper');
-const q = require('../mysql/queries');
 const alunosController = require('../controllers/alunosController');
 
 const router = express.Router();
@@ -8,11 +7,41 @@ const router = express.Router();
 router.use(express.json());
 
 router.get('/', (req, res) => {
+    const searchQuery = req.query.search;
+
+    if(searchQuery) {
+        const name = searchQuery.replace(/[\+]/g, ' ');
+        sql.doQuery(
+            alunosController.basicSearch(name),
+            (data) => {
+                res.status(200).send(data);
+            });
+    } else {
         sql.doQuery(
             alunosController.basicSelection(),
             (data) => {
                 res.status(200).send(data);
             });
+    }
+    
+});
+
+router.get('/full', (req, res) => {
+    sql.doQuery(
+        alunosController.fullSelection(),
+        (data) => {
+            res.status(200).send(data);
+        });
+});
+
+router.get('/full/:id', (req, res) => {
+    const id = req.params.id;
+
+    sql.doQuery(
+        alunosController.fullSelection(id),
+        (data) => {
+            res.status(200).send(data);
+        });
 });
 
 router.get('/:id', (req, res) => {
