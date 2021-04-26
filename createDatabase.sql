@@ -11,7 +11,7 @@ CREATE TABLE alunos(
 
 CREATE TABLE cursos(
     id_curso int primary key auto_increment,
-    nome_curso varchar(50)
+    nome_curso varchar(50) UNIQUE
 );
 
 -- CONSTRAINTS
