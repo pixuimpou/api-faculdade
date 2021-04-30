@@ -58,8 +58,14 @@ router.post('/', (req, res) => {
     let columns = Object.getOwnPropertyNames(req.body);
     let values = [];
     
-    columns.forEach(column => {
-        values.push(JSON.stringify(req.body[column]));
+    columns.forEach((column, index) => {
+        console.log(column)
+        if(column !== 'id_aluno'){
+            values.push(JSON.stringify(req.body[column]));
+        } else {
+            columns.splice(index, 0);
+        }
+        
     });
 
     sql.doQuery(

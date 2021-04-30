@@ -41,5 +41,27 @@ module.exports = {
         );
 
         return query;
+    },
+
+    insert: (values, columns) => {
+        let query = 
+        q.insert(
+            ['NULL', ...values],
+            ['id_curso', ...columns],
+            'cursos');
+    
+        return query;
+    },
+
+    delete: (id) => {
+        let query = q.delete('cursos', `id_curso = ${id}`);
+
+        return query;
+    },
+
+    update: (columnString, id) => {
+        let query = q.update('cursos', columnString, `id_curso = ${id}`);
+
+        return query;
     }
 }
