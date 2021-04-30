@@ -15,11 +15,11 @@ router.get('/', (req, res) => {
     );
 });
 
-router.get('/:id/alunos', (req, res) => {
-    const id = req.params.id;
+router.get('/:course', (req, res) => {
+    const course = req.params.course;
 
     sql.doQuery(
-        cursosController.getStudents(id),
+        cursosController.getStudents(course),
         (data) => {
             res.status(200).send(data);
         }
@@ -30,12 +30,11 @@ router.post('/', (req, res) => {
     let columns = Object.getOwnPropertyNames(req.body);
     let values = [];
 
-    columns.forEach((column, index) => {
-        console.log(column)
+    columns = columns.filter(column => column != 'id_curso');
+
+    columns.forEach((column) => {
         if(column !== 'id_curso'){
             values.push(JSON.stringify(req.body[column]));
-        } else {
-            columns.splice(index, 0);
         }
     });
 

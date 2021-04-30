@@ -28,14 +28,14 @@ module.exports = {
         return query;
     },
 
-    getStudents: (id) => {
+    getStudents: (course) => {
         let query;
 
         query =
             q.select(
                 ['a.nome'],
                 'cursos c',
-                `c.id_curso = ${id}`,
+                `c.nome_curso = "${course}"`,
                 q.join('INNER JOIN', 'alunos a', 'a.id_curso = c.id_curso'),
                 undefined
         );
