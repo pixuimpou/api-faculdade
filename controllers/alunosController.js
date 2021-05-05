@@ -57,16 +57,39 @@ module.exports = {
         return query
     },
 
-    basicSearch: (name) => {
-        let query =
+    basicSearch: (name, course) => {
+        let query;
+
+            if(name && course) {
+                query =
+                    q.select(
+                        ['a.id_aluno AS matricula, a.nome, c.nome_curso AS curso'],
+                        'alunos a',
+                        [`a.nome LIKE "${name}%"`, `c.nome_curso LIKE "${course}%"`],
+                        q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
+                        'a.nome'
+                    );
+                return query; 
+            } 
+            if(name){
+                query =
+                    q.select(
+                        ['a.id_aluno AS matricula, a.nome, c.nome_curso AS curso'],
+                        'alunos a',
+                        [`a.nome LIKE "%${name}%"`],
+                        q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
+                        'a.nome'
+                    ); 
+                return query;
+            }
+            query =
                 q.select(
                     ['a.id_aluno AS matricula, a.nome, c.nome_curso AS curso'],
                     'alunos a',
-                    `a.nome LIKE "%${name}%"`,
+                    [`a.nome LIKE "%${course}%"`],
                     q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
                     'a.nome'
-            ); 
-
+                );  
             return query;
     },
 

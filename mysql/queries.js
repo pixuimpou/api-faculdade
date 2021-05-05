@@ -1,5 +1,5 @@
 module.exports = {
-    select: (columns, table, condition, join, order) => {
+    select: (columns, table, conditions, join, order) => {
         let columnString = '';
         let query = '';
 
@@ -17,8 +17,12 @@ module.exports = {
             query += ` ${join}`;
         }
 
-        if(condition) {
-            query += ` WHERE ${condition}`;
+        query += ` WHERE 1=1`;
+
+        if(conditions) {
+            conditions.forEach(condition => {
+                query += ` AND ${condition}`;
+            });
         }
 
         if(order) {

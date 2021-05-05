@@ -7,12 +7,22 @@ const router = express.Router();
 router.use(express.json());
 
 router.get('/', (req, res) => {
-    const searchQuery = req.query.search;
+    const searchName = req.query.name;
+    const searchCourse = req.query.course;
 
-    if(searchQuery) {
-        const name = searchQuery.replace(/[\+]/g, ' ');
+    if(searchName || searchCourse) {
+        let name;
+        let course;
+
+        if (searchName){
+            name = searchName.replace(/[\+]/g, ' ');
+        }
+        if (searchCourse){
+            course = searchCourse.replace(/[\+]/g, ' ');
+        }
+        
         sql.doQuery(
-            alunosController.basicSearch(name),
+            alunosController.basicSearch(name, course),
             (data) => {
                 res.status(200).send(data);
             });
