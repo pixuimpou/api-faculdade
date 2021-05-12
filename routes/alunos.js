@@ -9,6 +9,28 @@ router.use(express.json());
 router.get('/', (req, res) => {
     const searchName = req.query.name;
     const searchCourse = req.query.course;
+    const orderBy = req.query.order;
+
+    let order;
+
+    if(!orderBy || orderBy === 'id-desc'){
+        order = 'a.id_aluno DESC';
+    }
+    else if(orderBy === 'id-asc'){
+        order = 'a.id_aluno ASC';
+    }
+    else if(orderBy === 'name-asc'){
+        order = 'a.nome ASC';
+    }
+    else if(orderBy === 'name-desc'){
+        order = 'a.nome DESC';
+    }
+    else if(orderBy === 'curso-asc'){
+        order = 'c.nome_curso ASC';
+    }
+    else if(orderBy === 'curso-desc'){
+        order = 'c.nome_curso DESC';
+    }
 
     if(searchName || searchCourse) {
         let name;
@@ -22,13 +44,13 @@ router.get('/', (req, res) => {
         }
         
         sql.doQuery(
-            alunosController.basicSearch(name, course),
+            alunosController.basicSearch(name, course, order),
             (data) => {
                 res.status(200).send(data);
             });
     } else {
         sql.doQuery(
-            alunosController.basicSelection(),
+            alunosController.basicSelection(undefined, order),
             (data) => {
                 res.status(200).send(data);
             });

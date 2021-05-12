@@ -2,7 +2,7 @@ const q = require('../mysql/queries');
 
 module.exports = {
 
-    basicSelection: (id) => {
+    basicSelection: (id, order) => {
         let query;
 
         if(id) {
@@ -12,7 +12,7 @@ module.exports = {
                     'alunos a',
                     `id_aluno = ${id}`,
                     q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
-                    'a.nome'
+                    order
             ); 
             return query;
         }
@@ -22,7 +22,7 @@ module.exports = {
                 'alunos a',
                 undefined,
                 q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
-                'a.nome'
+                order
             );
         
         return query;
@@ -39,7 +39,7 @@ module.exports = {
                     'alunos a',
                     `id_aluno = ${id}`,
                     q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
-                    'a.nome'
+                    'a.id_aluno DESC'
                     );
             
             return query;
@@ -51,13 +51,13 @@ module.exports = {
                     'alunos a',
                     undefined,
                     q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
-                    'a.nome'
+                    'a.id_aluno DESC'
                     );
 
         return query
     },
 
-    basicSearch: (name, course) => {
+    basicSearch: (name, course, order) => {
         let query;
 
             if(name && course) {
@@ -67,7 +67,7 @@ module.exports = {
                         'alunos a',
                         [`a.nome LIKE "${name}%"`, `c.nome_curso LIKE "${course}%"`],
                         q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
-                        'a.nome'
+                        order
                     );
                 return query; 
             } 
@@ -76,9 +76,9 @@ module.exports = {
                     q.select(
                         ['a.id_aluno AS matricula, a.nome, c.nome_curso AS curso'],
                         'alunos a',
-                        [`a.nome LIKE "%${name}%"`],
+                        [`a.nome LIKE "${name}%"`],
                         q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
-                        'a.nome'
+                        order
                     ); 
                 return query;
             }
@@ -86,21 +86,21 @@ module.exports = {
                 q.select(
                     ['a.id_aluno AS matricula, a.nome, c.nome_curso AS curso'],
                     'alunos a',
-                    [`a.nome LIKE "%${course}%"`],
+                    [`c.nome_curso LIKE "${course}%"`],
                     q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
-                    'a.nome'
+                    order
                 );  
             return query;
     },
 
-    fullSearch: (name) => {
+    fullSearch: (name, order) => {
         query = 
                 q.select(
                     ['a.id_aluno AS matricula', 'a.nome', 'a.cpf', 'c.nome_curso as curso'],
                     'alunos a',
                     `a.name LIKE %${name}%`,
                     q.join('INNER JOIN', 'cursos c', 'a.id_curso = c.id_curso'),
-                    'a.nome'
+                    order
                     );
             
             return query;
